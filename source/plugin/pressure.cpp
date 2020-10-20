@@ -298,6 +298,33 @@ PYTHON() void computePressureRhs(
 		rhs += (Real)(-kernMakeRhs.sum / (Real)kernMakeRhs.cnt);
 }
 
+
+
+//! Build and solve pressure system of equations
+//! perCellCorr: a divergence correction for each cell, optional
+//! fractions: for 2nd order obstacle boundaries, optional
+//! gfClamp: clamping threshold for ghost fluid method
+//! cgMaxIterFac: heuristic to determine maximal number of CG iteations, increase for more accurate solutions
+//! preconditioner: MIC, or MG (see Preconditioner enum)
+//! useL2Norm: use max norm by default, can be turned to L2 here
+//! zeroPressureFixing: remove null space by fixing a single pressure value, needed for MG
+//! curv: curvature for surface tension effects
+//! surfTens: surface tension coefficient
+//! retRhs: return RHS divergence, e.g., for debugging; optional
+PYTHON() void getLaplaceMatrix(
+	const FlagGrid& flags,
+	const MACGrid* fractions,
+	Grid<Real>& A0,
+	Grid<Real>& Ai,
+	Grid<Real>& Aj,
+	Grid<Real>& Ak
+	)
+{
+	
+	MakeLaplaceMatrix(flags, A0, Ai, Aj, Ak, fractions);
+	debMsg("getLaplaceMatrix run", 2);
+}
+
 //! Build and solve pressure system of equations
 //! perCellCorr: a divergence correction for each cell, optional
 //! fractions: for 2nd order obstacle boundaries, optional
